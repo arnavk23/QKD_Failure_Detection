@@ -1,0 +1,235 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qkd-failure-detection"
+version = "1.0.0"
+description = "Comprehensive failure detection system for Quantum Key Distribution (QKD) networks"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Arnav", email = "arnav@example.com"},
+]
+maintainers = [
+    {name = "Arnav", email = "arnav@example.com"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = [
+    "quantum",
+    "cryptography",
+    "key-distribution",
+    "anomaly-detection",
+    "machine-learning",
+    "security",
+    "bb84",
+    "qkd",
+]
+dependencies = [
+    "numpy>=1.21.0",
+    "scipy>=1.7.0",
+    "scikit-learn>=1.0.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "pandas>=1.3.0",
+    "jupyter>=1.0.0",
+    "tqdm>=4.62.0",
+]
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-benchmark>=4.0.0",
+    "black>=22.0.0",
+    "isort>=5.10.0",
+    "flake8>=5.0.0",
+    "mypy>=0.991",
+    "pylint>=2.15.0",
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+    "pre-commit>=2.20.0",
+]
+docs = [
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "sphinx-autodoc-typehints>=1.19.0",
+    "myst-parser>=0.18.0",
+    "nbsphinx>=0.8.0",
+]
+research = [
+    "tensorflow>=2.10.0",
+    "torch>=1.12.0",
+    "xgboost>=1.6.0",
+    "lightgbm>=3.3.0",
+    "optuna>=3.0.0",
+    "plotly>=5.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/arnav/qkd-failure-detection"
+Documentation = "https://arnav.github.io/qkd-failure-detection"
+Repository = "https://github.com/arnav/qkd-failure-detection.git"
+"Bug Tracker" = "https://github.com/arnav/qkd-failure-detection/issues"
+Changelog = "https://github.com/arnav/qkd-failure-detection/blob/main/CHANGELOG.md"
+
+[project.scripts]
+qkd-simulate = "src.qkd_simulator:main"
+qkd-detect = "src.anomaly_detector:main"
+qkd-analyze = "src.utils:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md", "*.yml", "*.yaml", "*.json"]
+
+# Black configuration
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# isort configuration
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["src"]
+known_third_party = ["numpy", "scipy", "sklearn", "matplotlib", "pandas", "seaborn", "jupyter", "pytest"]
+
+# mypy configuration
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "matplotlib.*",
+    "seaborn.*",
+    "sklearn.*",
+    "scipy.*",
+    "pandas.*",
+    "tqdm.*",
+]
+ignore_missing_imports = true
+
+# pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+testpaths = ["tests"]
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "benchmark: marks tests as performance benchmarks",
+    "security: marks tests as security-related",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# Bandit configuration
+[tool.bandit]
+exclude_dirs = ["tests", "build", "dist"]
+tests = ["B201", "B301", "B318", "B320", "B325", "B703"]
+skips = ["B101", "B601"]
+
+# Pylint configuration
+[tool.pylint.messages_control]
+disable = [
+    "C0103",  # Invalid name
+    "C0114",  # Missing module docstring
+    "R0903",  # Too few public methods
+    "R0913",  # Too many arguments
+    "W0212",  # Access to protected member
+]
+
+[tool.pylint.format]
+max-line-length = 88
+
+[tool.pylint.design]
+max-args = 10
+max-locals = 20
+max-returns = 8
+max-branches = 15
+max-statements = 60
+max-parents = 10
+max-attributes = 15
+min-public-methods = 1
+max-public-methods = 25
+max-bool-expr = 8

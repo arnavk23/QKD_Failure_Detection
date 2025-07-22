@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  qkd-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qkd-failure-detection-dev
+    volumes:
+      - .:/app
+      - qkd-data:/app/data
+      - qkd-results:/app/results
+      - qkd-logs:/app/logs
+    ports:
+      - "8888:8888"  # Jupyter notebook
+      - "5000:5000"  # Flask app (if added)
+    environment:
+      - PYTHONPATH=/app/src
+      - QKD_ENV=development
+      - QKD_LOG_LEVEL=DEBUG
+    command: |
+      bash -c "
+        echo 'Starting QKD Development Environment...'
+        python -m pytest tests/ -v
+        echo 'Running demo applications...'
+        python demos/demo_anomaly_detection.py
+        echo 'Starting Jupyter notebook server...'
+        jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
+      "
+    networks:
+      - qkd-network
+
+  qkd-testing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qkd-testing
+    volumes:
+      - .:/app
+      - qkd-test-results:/app/test-results
+    environment:
+      - PYTHONPATH=/app/src
+      - QKD_ENV=testing
+    command: |
+      bash -c "
+        echo 'Running comprehensive test suite...'
+        python -m pytest tests/ -v --cov=src --cov-report=html --cov-report=term
+        echo 'Running performance benchmarks...'
+        python -m pytest tests/ -k benchmark --benchmark-json=benchmark.json
+        echo 'Running security scans...'
+        bandit -r src/ -f json -o security-report.json || true
+        echo 'Test execution completed.'
+      "
+    networks:
+      - qkd-network
+
+  qkd-docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qkd-docs
+    volumes:
+      - .:/app
+      - qkd-docs:/app/docs/_build
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONPATH=/app/src
+    command: |
+      bash -c "
+        echo 'Building documentation...'
+        pip install sphinx sphinx-rtd-theme
+        cd docs
+        make clean html
+        echo 'Starting documentation server...'
+        cd _build/html
+        python -m http.server 8080
+      "
+    networks:
+      - qkd-network
+
+  qkd-research:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qkd-research
+    volumes:
+      - .:/app
+      - qkd-research-data:/app/research-data
+      - qkd-models:/app/models
+    environment:
+      - PYTHONPATH=/app/src
+      - QKD_ENV=research
+      - CUDA_VISIBLE_DEVICES=0  # If GPU available
+    command: |
+      bash -c "
+        echo 'Starting research environment...'
+        echo 'Running extended simulations...'
+        python src/qkd_simulator.py --extended-analysis
+        echo 'Training ML models...'
+        python src/ml_detector.py --train --optimize
+        echo 'Generating research plots...'
+        python -c 'from src.utils import generate_all_plots; generate_all_plots()'
+        echo 'Research analysis completed.'
+      "
+    networks:
+      - qkd-network
+
+volumes:
+  qkd-data:
+    driver: local
+  qkd-results:
+    driver: local
+  qkd-logs:
+    driver: local
+  qkd-test-results:
+    driver: local
+  qkd-docs:
+    driver: local
+  qkd-research-data:
+    driver: local
+  qkd-models:
+    driver: local
+
+networks:
+  qkd-network:
+    driver: bridge
