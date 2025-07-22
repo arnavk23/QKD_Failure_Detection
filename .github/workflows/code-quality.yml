@@ -69,7 +69,7 @@ jobs:
         bandit -r src/ -f txt >> code_quality_report.md 2>&1 || true
         
     - name: Upload code quality report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: code-quality-report
         path: code_quality_report.md
@@ -113,7 +113,7 @@ jobs:
         xenon --max-absolute B --max-modules A --max-average A src/
         
     - name: Upload complexity report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: complexity-report
         path: complexity_report.md
@@ -155,7 +155,7 @@ jobs:
         pydocstyle src/ >> doc_quality_report.md 2>&1 || true
         
     - name: Upload documentation quality report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: documentation-quality-report
         path: doc_quality_report.md

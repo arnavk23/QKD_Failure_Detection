@@ -93,7 +93,7 @@ jobs:
         chmod +x release-artifacts/install.sh
         
     - name: Upload release artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release-artifacts
         path: release-artifacts/
