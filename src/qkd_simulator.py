@@ -104,13 +104,17 @@ class BB84Protocol:
             # Same basis measurement
             if state.basis == basis:
                 # Perfect measurement with detection efficiency
-                if secrets.randbelow(10**6) < int(self.params.detection_efficiency * 10**6):
+                if secrets.randbelow(10**6) < int(
+                    self.params.detection_efficiency * 10**6
+                ):
                     measurements.append(state.bit)
                 else:
                     measurements.append(-1)  # No detection
             else:
                 # Different basis - random result
-                if secrets.randbelow(10**6) < int(self.params.detection_efficiency * 10**6):
+                if secrets.randbelow(10**6) < int(
+                    self.params.detection_efficiency * 10**6
+                ):
                     measurements.append(secrets.randbelow(2))
                 else:
                     measurements.append(-1)  # No detection
@@ -137,7 +141,10 @@ class BB84Protocol:
         return alice_sifted, bob_sifted
 
     def estimate_error_rate(
-        self, alice_key: List[int], bob_key: List[int], sample_size: Optional[int] = None
+        self,
+        alice_key: List[int],
+        bob_key: List[int],
+        sample_size: Optional[int] = None,
     ) -> float:
         """Estimate quantum bit error rate (QBER)"""
         if sample_size is None:

@@ -42,7 +42,7 @@ class TestSecurityMonitor:
             qber_threshold=0.11,
             key_rate_threshold=500,
             detection_sensitivity=0.8,
-            alert_window=300,  # 5 minutes
+            alert_window=300,
         )
 
     def create_test_events(self):
