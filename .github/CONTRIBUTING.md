@@ -87,31 +87,31 @@ mypy src/
 
 ### Types of Contributions
 
-#### 🐛 Bug Fixes
+#### Bug Fixes
 - Fix issues in existing algorithms
 - Improve error handling
 - Resolve performance problems
 - Correct documentation errors
 
-#### ✨ New Features
+#### New Features
 - Implement new detection algorithms
 - Add support for additional QKD protocols
 - Enhance analysis capabilities
 - Improve user interface
 
-#### 📚 Documentation
+#### Documentation
 - Improve code documentation
 - Add tutorials and examples
 - Write research guides
 - Update API documentation
 
-#### 🧪 Testing
+#### Testing
 - Add unit tests
 - Create integration tests
 - Develop performance benchmarks
 - Improve test coverage
 
-#### 🔬 Research
+#### Research
 - Implement new research algorithms
 - Validate against literature
 - Add experimental features

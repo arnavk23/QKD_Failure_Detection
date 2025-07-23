@@ -8,7 +8,8 @@ Author: Under guidance of Vijayalaxmi Mogiligidda
 """
 
 import numpy as np
-import random
+import random  # Only for non-crypto uses
+import secrets  # For cryptographically secure randomness
 from typing import Dict, List, Tuple, Optional
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
@@ -55,12 +56,12 @@ class BB84Protocol:
         self.final_key = []
 
     def generate_random_bits(self, length: int) -> List[int]:
-        """Generate random bit sequence"""
-        return [random.randint(0, 1) for _ in range(length)]
+        """Generate cryptographically secure random bit sequence"""
+        return [secrets.randbelow(2) for _ in range(length)]
 
     def generate_random_bases(self, length: int) -> List[str]:
-        """Generate random basis sequence"""
-        return [random.choice(["+", "x"]) for _ in range(length)]
+        """Generate cryptographically secure random basis sequence"""
+        return [secrets.choice(["+", "x"]) for _ in range(length)]
 
     def prepare_quantum_states(
         self, bits: List[int], bases: List[str]
@@ -81,11 +82,11 @@ class BB84Protocol:
             new_state = QuantumState(basis=state.basis, bit=state.bit)
 
             # Apply channel loss
-            if random.random() < self.params.channel_loss:
+            if secrets.randbelow(10**6) < int(self.params.channel_loss * 10**6):
                 new_state.bit = -1  # Lost photon
 
             # Apply bit flip error
-            elif random.random() < self.params.error_rate:
+            elif secrets.randbelow(10**6) < int(self.params.error_rate * 10**6):
                 new_state.bit = 1 - new_state.bit
                 new_state.error = True
 
@@ -103,14 +104,14 @@ class BB84Protocol:
             # Same basis measurement
             if state.basis == basis:
                 # Perfect measurement with detection efficiency
-                if random.random() < self.params.detection_efficiency:
+                if secrets.randbelow(10**6) < int(self.params.detection_efficiency * 10**6):
                     measurements.append(state.bit)
                 else:
                     measurements.append(-1)  # No detection
             else:
                 # Different basis - random result
-                if random.random() < self.params.detection_efficiency:
-                    measurements.append(random.randint(0, 1))
+                if secrets.randbelow(10**6) < int(self.params.detection_efficiency * 10**6):
+                    measurements.append(secrets.randbelow(2))
                 else:
                     measurements.append(-1)  # No detection
         return measurements
@@ -136,7 +137,7 @@ class BB84Protocol:
         return alice_sifted, bob_sifted
 
     def estimate_error_rate(
-        self, alice_key: List[int], bob_key: List[int], sample_size: int = None
+        self, alice_key: List[int], bob_key: List[int], sample_size: Optional[int] = None
     ) -> float:
         """Estimate quantum bit error rate (QBER)"""
         if sample_size is None:
@@ -221,7 +222,7 @@ class BB84Protocol:
 class QKDSystemSimulator:
     """Main QKD System Simulator"""
 
-    def __init__(self, params: QKDParameters = None):
+    def __init__(self, params: Optional[QKDParameters] = None):
         self.params = params or QKDParameters()
         self.simulation_history = []
 
@@ -263,8 +264,8 @@ class QKDSystemSimulator:
             results.append(session_result)
 
             # Occasionally inject random failures
-            if random.random() < 0.1:  # 10% chance of failure
-                failure_type = random.choice(
+            if secrets.randbelow(10) == 0:  # 10% chance of failure
+                failure_type = secrets.choice(
                     [
                         "channel_loss",
                         "detector_noise",
@@ -273,7 +274,9 @@ class QKDSystemSimulator:
                         "source_instability",
                     ]
                 )
-                self.inject_failure(failure_type, random.uniform(0.01, 0.05))
+                # secrets does not have uniform, so use a secure float in [0.01, 0.05)
+                intensity = 0.01 + (secrets.randbelow(4000) / 100000.0)
+                self.inject_failure(failure_type, intensity)
 
         return results
 
@@ -302,7 +305,7 @@ class QKDSystemSimulator:
 
         return stats
 
-    def plot_performance_metrics(self, save_path: str = None):
+    def plot_performance_metrics(self, save_path: Optional[str] = None):
         """Plot system performance metrics"""
         if not self.simulation_history:
             logger.warning("No simulation history available for plotting")
