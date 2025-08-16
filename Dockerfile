@@ -1,5 +1,5 @@
 # QKD Failure Detection System Docker Image
-FROM python:3.13-slim
+FROM python:3.13.7-slim
 
 # Set metadata
 LABEL maintainer="Arnav <arnav@example.com>"
