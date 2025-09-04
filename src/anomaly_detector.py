@@ -29,13 +29,38 @@ logger = logging.getLogger(__name__)
 class AnomalyResult:
     """Result class for anomaly detection"""
 
-    is_anomaly: bool
-    confidence: float
-    score: float
-    method: str
-    timestamp: Optional[float] = None
-    details: Optional[Dict] = None
-    anomaly_type: Optional[str] = None
+    def __init__(self, is_anomaly, anomaly_type=None, confidence=None, score=None, anomaly_score=None, method=None, threshold=None, details=None, timestamp=None):
+        if is_anomaly is None:
+            raise TypeError("is_anomaly is a required positional argument")
+        self.is_anomaly = is_anomaly
+        self.anomaly_type = anomaly_type
+        self.confidence = confidence
+        self.score = score if score is not None else anomaly_score
+        self.anomaly_score = anomaly_score if anomaly_score is not None else score
+        self.method = method
+        self.threshold = threshold
+        self.details = details
+        self.timestamp = timestamp
+    def to_json(self):
+        import json
+        return json.dumps(self.to_dict())
+        self.is_anomaly = is_anomaly
+        self.anomaly_type = anomaly_type
+        self.confidence = confidence
+        self.score = score if score is not None else anomaly_score
+        self.anomaly_score = anomaly_score if anomaly_score is not None else score
+        self.method = method
+        self.threshold = threshold
+        self.details = details
+        self.timestamp = timestamp
+
+
+
+    def __repr__(self):
+        return f"AnomalyResult(is_anomaly={self.is_anomaly}, anomaly_type={self.anomaly_type}, confidence={self.confidence}, score={self.score}, method={self.method}, threshold={self.threshold}, details={self.details}, timestamp={self.timestamp})"
+
+    def to_dict(self):
+        return self.__dict__
 
 
 class StatisticalAnomalyDetector:
@@ -106,6 +131,8 @@ class StatisticalAnomalyDetector:
 
         limits = self.control_limits[metric_name]
 
+        if not isinstance(data, np.ndarray):
+            data = np.array(data, dtype=float)
         violations = {
             "out_of_control": (data > limits["ucl"]) | (data < limits["lcl"]),
             "warning_zone": ((data > limits["uwl"]) & (data <= limits["ucl"]))
@@ -199,7 +226,7 @@ class MLAnomalyDetector:
 class QKDAnomalyDetector:
     """Comprehensive QKD system anomaly detector"""
 
-    def __init__(self, config: Dict = None):
+    def __init__(self, config: Optional[dict] = None):
         self.config = config or self._default_config()
         self.statistical_detector = StatisticalAnomalyDetector(
             window_size=self.config["window_size"],
@@ -260,7 +287,7 @@ class QKDAnomalyDetector:
         for metric in ["qber", "sift_ratio", "final_key_length", "key_efficiency"]:
             if metric in features_df.columns:
                 self.statistical_detector.establish_baseline(
-                    features_df[metric].values, metric
+                    np.array(features_df[metric].values), metric
                 )
 
         # Fit ML models
@@ -306,7 +333,7 @@ class QKDAnomalyDetector:
         confidence = total_score / max(method_count, 1)
 
         return AnomalyResult(
-            is_anomaly=is_anomaly,
+            is_anomaly=bool(is_anomaly),
             confidence=float(confidence),
             score=float(total_score),
             method="qkd_anomaly_detector",
@@ -343,7 +370,7 @@ class QKDAnomalyDetector:
         std = np.std(data)
 
         ucl = mean + 3 * std
-        lcl = max(0.0, mean - 3 * std)
+        lcl = max(0.0, float(mean - 3 * std))
 
         violations = (data > ucl) | (data < lcl)
 
@@ -361,11 +388,11 @@ class QKDAnomalyDetector:
         }
 
     def cusum_analysis(
-        self, data: np.ndarray, target: float = None, h: float = 5.0, k: float = 0.5
+        self, data: np.ndarray, target: Optional[float] = None, h: float = 5.0, k: float = 0.5
     ) -> Dict:
         """CUSUM analysis - test-compatible interface"""
         if target is None:
-            target = np.mean(data)
+            target = float(np.mean(data))
 
         n = len(data)
         pos_cusum = np.zeros(n)
@@ -422,7 +449,17 @@ class QKDAnomalyDetector:
     def detect_outliers(self, data: np.ndarray, method: str = "zscore") -> np.ndarray:
         """Generic outlier detection - test-compatible interface"""
         if method == "zscore":
-            z_scores = np.abs(stats.zscore(data))
+            if not isinstance(data, np.ndarray):
+                data = np.array(data, dtype=float)
+            data = np.array(data, dtype=float)
+            assert isinstance(data, np.ndarray), f"data must be np.ndarray, got {type(data)}"
+            data = np.array(data, dtype=np.float64)
+            mean = np.nanmean(data)
+            std = np.nanstd(data)
+            if std == 0:
+                z_scores = np.zeros_like(data)
+            else:
+                z_scores = np.abs((data - mean) / std)
             return z_scores > 3.0
         elif method == "iqr":
             q25, q75 = np.percentile(data, [25, 75])
@@ -479,29 +516,38 @@ class QKDAnomalyDetector:
 
     def adaptive_threshold(self, data: np.ndarray, sensitivity: float = 0.95) -> float:
         """Adaptive threshold calculation - test-compatible interface"""
-        return np.percentile(data, sensitivity * 100)
+        return float(np.percentile(data, sensitivity * 100))
 
-    def classify_anomaly(self, anomaly_data: Dict) -> str:
+    def classify_anomaly(self, anomaly_data: dict):
         """Classify type of anomaly - test-compatible interface"""
-        if "qber" in anomaly_data:
+        anomaly_type = "unknown_anomaly"
+        if "key_rate" in anomaly_data and anomaly_data["key_rate"] < 100:
+            anomaly_type = "low_key_rate"
+        elif "qber" in anomaly_data:
             qber = anomaly_data["qber"]
             if qber > 0.11:
-                return "security_breach"
+                anomaly_type = "high_qber"
             elif qber > 0.05:
-                return "quality_degradation"
-
-        if "sift_ratio" in anomaly_data:
+                anomaly_type = "quality_degradation"
+        elif "sift_ratio" in anomaly_data:
             sift_ratio = anomaly_data["sift_ratio"]
             if sift_ratio < 0.3:
-                return "channel_degradation"
-
-        return "unknown_anomaly"
+                anomaly_type = "low_sift_ratio"
+        # Multiple anomalies
+        if ("qber" in anomaly_data and anomaly_data["qber"] > 0.11 and "sift_ratio" in anomaly_data and anomaly_data["sift_ratio"] < 0.3):
+            anomaly_type = "multiple_anomalies"
+        class Result:
+            def __init__(self, anomaly_type):
+                self.anomaly_type = anomaly_type
+        return Result(anomaly_type)
 
     def real_time_detect(self, new_data: Dict) -> AnomalyResult:
         """Real-time detection for single data point - test-compatible interface"""
         return self.detect([new_data])
 
-    def ensemble_detect(self, data: List[Dict], methods: List[str] = None) -> Dict:
+    def ensemble_detect(self, data: list, methods: Optional[list] = None) -> dict:
+        if methods is None:
+            methods = ["statistical", "ml", "domain"]
         """Ensemble detection using multiple methods - test-compatible interface"""
         if methods is None:
             methods = ["statistical", "ml", "domain"]
@@ -550,19 +596,19 @@ class QKDAnomalyDetector:
         statistical_anomalies = {}
         for metric in ["qber", "sift_ratio", "final_key_length", "key_efficiency"]:
             if metric in features_df.columns:
-                data = features_df[metric].values
+                data = np.asarray(features_df[metric].values, dtype=float)
 
                 # Multiple statistical tests
                 statistical_anomalies[f"{metric}_zscore"] = (
-                    self.statistical_detector.detect_outliers_zscore(data, metric)
+                    self.statistical_detector.detect_outliers_zscore(np.asarray(data, dtype=float), metric)
                 )
                 statistical_anomalies[f"{metric}_iqr"] = (
-                    self.statistical_detector.detect_outliers_iqr(data, metric)
+                    self.statistical_detector.detect_outliers_iqr(np.asarray(data, dtype=float), metric)
                 )
 
                 # Control chart analysis
                 control_violations = self.statistical_detector.control_chart_analysis(
-                    data, metric
+                    np.asarray(data, dtype=float), metric
                 )
                 for violation_type, violations in control_violations.items():
                     statistical_anomalies[f"{metric}_{violation_type}"] = violations
@@ -663,7 +709,7 @@ class QKDAnomalyDetector:
 
         return normalized_score
 
-    def plot_anomaly_analysis(self, results: Dict, save_path: str = None):
+    def plot_anomaly_analysis(self, results: Dict, save_path: Optional[str] = None):
         """Plot comprehensive anomaly analysis"""
         features_df = results["features"]
         overall_anomaly = results["overall_anomaly"]
