@@ -456,9 +456,9 @@ If you use this work in your research, please cite:
 ```bibtex
 @software{qkd_failure_detection_2025,
   title={QKD System Failure Auto Detection: A Comprehensive Machine Learning Approach},
-  author={Arnav and Mogiligidda, Vijayalaxmi},
+  author={Arnav Kapoor},
   year={2025},
-  url={https://github.com/username/qkd-failure-detection},
+  url={https://github.com/arnavk23/qkd-failure-detection},
   note={Research Project in Quantum Cryptography Security}
 }
 ```
