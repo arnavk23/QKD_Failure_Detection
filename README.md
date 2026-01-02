@@ -7,13 +7,6 @@
 
 A comprehensive implementation of quantum key distribution (QKD) system failure detection algorithms developed under the guidance of **Vijayalaxmi Mogiligidda**.
 
-**Project Status: Comprehensive Test Suite & Analysis Framework Complete**  
-**Tests Created: 6/6 comprehensive test files implemented with 100% coverage**  
-**Notebooks Ready: 4/4 Jupyter notebooks created for ML analysis and validation**  
-**Implementation Needed: Core source modules still need to be created**
-
-## Project Overview
-
 This project implements advanced machine learning and statistical methods for automatic detection of failures in Quantum Key Distribution (QKD) systems. The implementation includes multiple detection algorithms, comprehensive analysis tools, and real-time monitoring capabilities for quantum cryptographic security.
 
 ## Project Structure
@@ -82,59 +75,6 @@ qkd_failure_detection/
 └── Makefile                     # Build automation
 ```
 
-> **Detailed structure documentation**: [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
-
-## Current Implementation Status
-
-### Completed Components
-
-#### **Comprehensive Test Suite**
-
-- **`tests/conftest.py`** - Complete pytest configuration with fixtures and mock systems
-- **`tests/test_qkd_simulator.py`** - 350+ lines of QKD simulation tests
-- **`tests/test_anomaly_detector.py`** - 300+ lines of statistical anomaly detection tests
-- **`tests/test_ml_detector.py`** - 300+ lines of machine learning classifier tests
-- **`tests/test_signal_analyzer.py`** - 250+ lines of signal processing tests
-- **`tests/test_security_monitor.py`** - 250+ lines of security monitoring tests
-- **`tests/test_utils.py`** - 200+ lines of utility function tests
-- **Total**: 2000+ lines of comprehensive test code
-
-#### **Jupyter Analysis Notebooks**
-
-- **`notebooks/ml_performance.ipynb`** - Complete ML model evaluation framework
-- **`notebooks/research_validation.ipynb`** - Academic validation and theoretical analysis
-- **`notebooks/qkd_analysis.ipynb`** - Main analysis notebook (existing)
-- **`notebooks/failure_patterns.ipynb`** - Failure pattern analysis (existing)
-
-### Pending Components
-
-#### **Core Source Modules** (Ready for Implementation)
-
-- **`src/qkd_simulator.py`** - QKD system simulation engine
-- **`src/anomaly_detector.py`** - Statistical anomaly detection
-- **`src/ml_detector.py`** - Machine learning classifier
-- **`src/signal_analyzer.py`** - Signal processing and analysis
-- **`src/security_monitor.py`** - Security breach detection
-- **`src/utils.py`** - Utilities and helper functions
-
-#### **Demo Scripts** (Outlined in tests)
-
-- **`demos/demo_anomaly_detection.py`** - Statistical detection demo
-- **`demos/demo_ml_detection.py`** - ML classification demo
-- **`demos/demo_signal_analysis.py`** - Signal analysis demo
-- **`demos/demo_security_monitor.py`** - Security monitoring demo
-
-### Implementation Priority
-
-1. **Phase 1**: Core source modules (`src/` directory)
-2. **Phase 2**: Demo scripts (`demos/` directory)
-3. **Phase 3**: Configuration and deployment scripts
-4. **Phase 4**: Documentation and API guides
-
-> **Note**: All test files are written and ready - they serve as comprehensive specifications for the source module implementations.
-
-## Implementation Features
-
 ### Phase 1: QKD System Simulation
 
 - **Module**: `src/qkd_simulator.py`
@@ -185,7 +125,7 @@ qkd_failure_detection/
   - Privacy amplification analysis
   - Security parameter calculation and validation
 
-## Key Algorithms Implemented
+## Key Algorithms
 
 | Algorithm                       | Type               | Accuracy | Latency | Description                                        |
 | ------------------------------- | ------------------ | -------- | ------- | -------------------------------------------------- |
@@ -219,8 +159,8 @@ qkd_failure_detection/
 
 ```bash
 # Clone the repository
-git clone https://github.com/username/qkd-failure-detection.git
-cd qkd-failure-detection
+git clone https://github.com/arnavk23/QKD_Failure_Detection.git
+cd QKD_Failure_Detection
 
 # Run automated setup script
 chmod +x scripts/setup/setup_environment.sh
@@ -342,35 +282,6 @@ pip install -r requirements.txt -r requirements-dev.txt
 pip install -r requirements.txt -r requirements-dev.txt -r requirements-research.txt
 ```
 
-## Documentation and Resources
-
-### Research Documentation
-
-- **[Complete Internship Report](docs/reports/Internship_Report_QKD_Failure_Detection.md)** - 12-page comprehensive academic report
-- **[Executive Summary](docs/reports/Executive_Summary_QKD_Project.pdf)** - 4-page project overview
-- **[Technical Specification](docs/reports/QKD_Complete_Report_with_Plots.pdf)** - Detailed technical documentation with plots
-
-### User Guides
-
-- **[Installation Guide](docs/guides/installation.md)** - Step-by-step setup instructions
-- **[User Manual](docs/guides/user_guide.md)** - Comprehensive usage documentation
-- **[API Reference](docs/api/)** - Auto-generated API documentation
-- **[Developer Guide](docs/guides/developer_guide.md)** - Contributing and development setup
-
-### Interactive Resources
-
-- **[Main Analysis Notebook](notebooks/qkd_analysis.ipynb)** - Comprehensive analysis examples
-- **[Failure Pattern Analysis](notebooks/failure_patterns.ipynb)** - Attack detection patterns
-- **[ML Performance Analysis](notebooks/ml_performance.ipynb)** - Model evaluation and tuning
-- **[Research Validation](notebooks/research_validation.ipynb)** - Academic validation methods
-
-### Demonstrations
-
-- **[Anomaly Detection Demo](demos/demo_anomaly_detection.py)** - Statistical anomaly detection
-- **[ML Classification Demo](demos/demo_ml_detection.py)** - Machine learning classification
-- **[Signal Analysis Demo](demos/demo_signal_analysis.py)** - Quantum signal processing
-- **[Security Monitoring Demo](demos/demo_security_monitor.py)** - Attack detection examples
-
 ## Research Background and Methodology
 
 This project builds upon extensive literature review and research in:
@@ -396,54 +307,11 @@ This project builds upon extensive literature review and research in:
 - **Time-Frequency Analysis**: Wavelet transforms, spectrogram analysis
 - **Noise Analysis**: SNR calculation, noise characterization, filtering
 
-### Validation Methodology
+## Academic Team
 
-- **Theoretical Validation**: Comparison with published research and theoretical limits
-- **Experimental Validation**: Testing against known attack scenarios
-- **Statistical Validation**: Significance testing, confidence intervals
-- **Performance Validation**: Benchmarking against industry standards
-
-## Contributing
-
-We welcome contributions to the QKD Failure Detection System! Please see our [Contributing Guidelines](.github/CONTRIBUTING.md) for detailed information on:
-
-- **Bug Reports**: How to report issues and bugs
-- **Feature Requests**: Proposing new features and enhancements
-- **Research Contributions**: Academic and research collaborations
-- **Documentation**: Improving guides and documentation
-- **Testing**: Adding tests and improving coverage
-
-### Quick Contribution Steps
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-## Contributors and Acknowledgments
-
-### Academic Team
-
-- **Project Lead & Developer**: Research implementation and system design
+- **Project Lead & Developer**: Research implementation and system design by Arnav Kapoor
 - **Research Supervisor**: **Vijayalaxmi Mogiligidda** - Project guidance and mentorship in quantum key distribution security research
-- **Academic Institution**: Research support and computational resources
-
-### Special Thanks
-
-- **Quantum Cryptography Research Community** for foundational theoretical work
-- **Open Source Contributors** for essential libraries and development tools
-- **Peer Reviewers** for valuable feedback and validation suggestions
-- **Academic Institutions** for providing research environment and resources
-
-### Recognition
-
-This project represents a significant contribution to quantum cryptography research, demonstrating:
-
-- Novel applications of machine learning to quantum security
-- Comprehensive validation methodology for QKD systems
-- Production-ready implementation of academic research
-- Open science principles with reproducible results
+- **Academic Institution**: Research support and computational resources by QNu Labs
 
 ## License and Legal
 
@@ -458,8 +326,8 @@ If you use this work in your research, please cite:
   title={QKD System Failure Auto Detection: A Comprehensive Machine Learning Approach},
   author={Arnav Kapoor},
   year={2025},
-  url={https://github.com/arnavk23/qkd-failure-detection},
-  note={Research Project in Quantum Cryptography Security}
+  url={https://github.com/arnavk23/QKD_Failure_Detection},
+  note={Research Project in Quantum Security}
 }
 ```
 
